@@ -1,5 +1,7 @@
 # Springboard
 # 3.4.1 - API data wrangling
+---
+Nicolas Wong
 
 ## Goal
 Use the [Quandl API](https://docs.quandl.com/docs/time-series) API to explore equities data from the Fankfurt Stock Exchange. We'll analyze the stock prices of a company called [Carl Zeiss Meditec](https://www.zeiss.com/meditec/int/home.html) (stock ticker AFX_X)
@@ -21,12 +23,8 @@ Try to only used the package *[requests](http://docs.python-requests.org/en/mast
 
 
 ```python
-API_KEY = 'yPrjjxViaKktTDxWEdyX'
-```
-
-
-```python
-from requests import request
+import os
+API_KEY = os.environ['QUANDL_API_KEY']
 ```
 
 ### 1. Collect data from the Franfurt Stock Exchange, for the ticker AFX_X, for the whole year 2017 (keep in mind that the date format is YYYY-MM-DD).
@@ -34,13 +32,15 @@ from requests import request
 
 ```python
 # Set up URL info
-data_info = {
+from requests import request
+
+url_info = {
     'database_code': 'FSE',
     'dataset_code': 'AFX_X',
     'filetype': 'json',
 }
 
-url = f"https://www.quandl.com/api/v3/datasets/{data_info['database_code']}/{data_info['dataset_code']}.{data_info['filetype']}"
+url = f"https://www.quandl.com/api/v3/datasets/{url_info['database_code']}/{url_info['dataset_code']}.{url_info['filetype']}"
 
 # Set up params according to https://docs.quandl.com/docs/parameters-2
 params = {
@@ -82,6 +82,7 @@ type(data)
 # Volume	Volume of trades for the day
 # Adjustment Factor	The factor by which historical share prices/volumes are adjusted. This field is populated only in the adjusted time-series.
 # Adjustment Type	A numeric code (integer) corresponding to the corporate action that precipitated adjustment, such as dividend, consolidation, etc. If more than one corporate action occurs for the day, the individual codes are combined. For more details, see the Adjustment Types section below.
+
 for k,v in enumerate(data['dataset']['column_names']):
     print(k,v)
 ```
@@ -105,7 +106,7 @@ for k,v in enumerate(data['dataset']['column_names']):
 ```python
 d = data['dataset']['data']
 open_data = [x[1] for x in d if x[1]]
-# open_data
+
 max(open_data), min(open_data)
 
 # Another way to accomplish the same thing:
@@ -227,22 +228,6 @@ round(
 
 
 ```python
-tvol_list.sort()
-
-tvol_list[round(len(tvol_list)/2)]
-
-len(tvol_list)
-```
-
-
-
-
-    255
-
-
-
-
-```python
 def my_median(in_list):
     if len(in_list) % 2 == 0:
         median_tuple = (
@@ -253,6 +238,8 @@ def my_median(in_list):
         return median_val
     else:
         return in_list[len(in_list)//2]
+
+tvol_list.sort()
 
 my_median(tvol_list)
 ```
@@ -302,11 +289,6 @@ assert(median(random_list_odd) != my_median(random_list_odd[:-1])) # Fails
 
 ```
 
-    [26, 28, 45, 57, 68, 71, 75, 81, 86, 92]
-    [39, 57, 60, 70, 79, 80, 87, 93, 95]
+    [11, 18, 36, 45, 51, 60, 66, 71, 75, 89]
+    [23, 35, 43, 50, 51, 64, 73, 76, 98]
 
-
-
-```python
-
-```
